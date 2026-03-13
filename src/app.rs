@@ -18,6 +18,8 @@ pub struct App {
     pub current_path: PathBuf,
     /// Whether to quit the app
     pub should_quit: bool,
+    /// Whether to show hidden directories (starting with .)
+    pub show_hidden: bool,
 }
 
 impl App {
@@ -30,6 +32,7 @@ impl App {
             center_entries: Vec::new(),
             current_path,
             should_quit: false,
+            show_hidden: false,
         };
         app.load_current_dir()?;
         Ok(app)
@@ -37,7 +40,7 @@ impl App {
 
     /// Load entries from a directory
     /// If `addition` is true, the entries will include the current directory (".") and parent directory ("..") with their paths for display in the center pane. If false, they will be displayed as normal without paths.
-    fn read_dir(path: &Path, addition: bool) -> io::Result<Vec<Entry>> {
+    fn read_dir(&self, path: &Path, addition: bool) -> io::Result<Vec<Entry>> {
         if !path.is_dir() {
             return Ok(Vec::new());
         }
@@ -83,7 +86,7 @@ impl App {
                     need_preview: true,
                 }
             })
-            .filter(|e| e.is_dir)
+            .filter(|e| e.is_dir && (self.show_hidden || !e.name.starts_with('.')))
             .collect::<Vec<_>>();
 
         read_entries.sort_by(|a, b| {
@@ -98,7 +101,7 @@ impl App {
 
     /// Load the current directory entries into the center, and update the left (parent) entries accordingly
     fn load_current_dir(&mut self) -> io::Result<()> {
-        self.center_entries = Self::read_dir(&self.current_path, true)?;
+        self.center_entries = self.read_dir(&self.current_path, true)?;
         if !self.center_entries.is_empty() {
             self.center_state.select(Some(0));
         } else {
@@ -106,7 +109,7 @@ impl App {
         }
 
         if let Some(parent) = self.current_path.parent() {
-            self.left_entries = Self::read_dir(parent, false)?;
+            self.left_entries = self.read_dir(parent, false)?;
             let current_dir_name = self
                 .current_path
                 .file_name()
@@ -131,7 +134,7 @@ impl App {
             && let Some(entry) = self.center_entries.get(index)
             && entry.need_preview
         {
-            return Self::read_dir(&entry.path, false).unwrap_or_default();
+            return self.read_dir(&entry.path, false).unwrap_or_default();
         }
         Vec::new()
     }
@@ -184,6 +187,12 @@ impl App {
             self.current_path = parent.to_path_buf();
             self.load_current_dir()?;
         }
+        Ok(())
+    }
+
+    pub fn toggle_hidden(&mut self) -> io::Result<()> {
+        self.show_hidden = !self.show_hidden;
+        self.load_current_dir()?;
         Ok(())
     }
 }

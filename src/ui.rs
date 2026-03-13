@@ -1,13 +1,19 @@
 use crate::app::App;
 use crate::entry::Entry;
 use ratatui::{
-    Frame,
     layout::{Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
-    widgets::{Block, Borders, List, ListItem},
+    text::Text,
+    widgets::{Block, Borders, List, ListItem, Paragraph},
+    Frame,
 };
 
 pub fn ui(f: &mut Frame, app: &mut App) {
+    let vertical_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Min(0), Constraint::Length(1)])
+        .split(f.area());
+
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
@@ -15,7 +21,7 @@ pub fn ui(f: &mut Frame, app: &mut App) {
             Constraint::Percentage(40),
             Constraint::Percentage(30),
         ])
-        .split(f.area());
+        .split(vertical_chunks[0]);
 
     let selected_style = Style::default()
         .fg(Color::Blue)
@@ -61,4 +67,10 @@ pub fn ui(f: &mut Frame, app: &mut App) {
     let right_block = Block::default().borders(Borders::ALL).title(" PREVIEW  ");
     let right_list = List::new(right_items).block(right_block);
     f.render_widget(right_list, chunks[2]);
+
+    let status = if app.show_hidden { "SHOW" } else { "HIDDEN" };
+    let hint_text = format!("I/i: TOGGLE HIDDEN FOLDER (CURRENT: {}) | Q/q: QUIT", status);
+    let hint = Paragraph::new(Text::from(hint_text))
+        .block(Block::default().borders(Borders::NONE));
+    f.render_widget(hint, vertical_chunks[1]);
 }
