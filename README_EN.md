@@ -1,8 +1,14 @@
 ## [English](https://www.google.com/search?q=README_EN.md) | [中文](README.md)
 
-<div align="center">
-<img src="assets/logo.jpg" width="30%" alt="JUMPING Logo">
-</div>
+<table align="center" border="0">
+  <tr>
+    <td align="center" valign="middle" width="30%">  <img src="assets/logo.jpg" width="100%" alt="JUMPING Logo">
+    </td>
+    <td align="center" valign="middle" width="70%">
+      <img src="assets/demo.gif" width="100%" alt="JUMPING Demo">
+    </td>
+  </tr>
+</table>
 
 # 🛰️ JUMPING
 
@@ -111,3 +117,27 @@ curl -sSL https://raw.githubusercontent.com/harkerhand/jumping/master/install.sh
 * **`Enter`**: Confirm selection and jump to the directory.
 * **`i`**: Toggle visibility of hidden files/folders.
 * **`q` / `Esc**`: Quit the tool and stay in the current directory.
+
+## 🛠️ Uninstallation
+
+We provide an uninstall script that automatically deletes binaries:
+
+```bash
+# Download the uninstaller
+wget https://raw.githubusercontent.com/harkerhand/jumping/master/uninstall.sh
+chmod +x uninstall.sh
+./uninstall.sh
+```
+
+OR
+
+```bash
+# 直接运行卸载脚本
+curl -sSL https://raw.githubusercontent.com/harkerhand/jumping/master/uninstall.sh | bash
+```
+
+Uninstall script function:
+
+- ✅ Automatic detection of operating systems
+- ✅ Delete the installed binary
+- ✅ Prompt the user to manually delete the relevant content in the shell configuration

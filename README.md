@@ -1,8 +1,14 @@
 ## [English](README_EN.md) | [中文](README.md)
 
-<div align="center">
-   <img src="assets/logo.jpg" width="30%" alt="JUMPING Logo">
-</div>
+<table align="center" border="0">
+  <tr>
+    <td align="center" valign="middle" width="30%">  <img src="assets/logo.jpg" width="100%" alt="JUMPING Logo">
+    </td>
+    <td align="center" valign="middle" width="70%">
+      <img src="assets/demo.gif" width="100%" alt="JUMPING Demo">
+    </td>
+  </tr>
+</table>
 
 # 🛰️ JUMPING
 
@@ -109,3 +115,27 @@ curl -sSL https://raw.githubusercontent.com/harkerhand/jumping/master/install.sh
 * `Enter`: 确认选择并直接跳转。
 * `i`: 切换是否显示隐藏文件夹。
 * `q` / `Esc`: 退出工具并保持原位。
+
+## 🛠️ 卸载
+
+我们提供了卸载脚本，可以自动删除二进制文件：
+
+```bash
+# 下载卸载脚本
+wget https://raw.githubusercontent.com/harkerhand/jumping/master/uninstall.sh
+chmod +x uninstall.sh
+./uninstall.sh
+```
+
+或者
+
+```bash
+# 直接运行卸载脚本
+curl -sSL https://raw.githubusercontent.com/harkerhand/jumping/master/uninstall.sh | bash
+```
+
+卸载脚本功能：
+
+- ✅ 自动检测操作系统
+- ✅ 删除安装的二进制文件
+- ✅ 提示用户手动删除 Shell 配置中的相关内容
