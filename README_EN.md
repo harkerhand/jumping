@@ -33,7 +33,7 @@ Shell environment:
 
 ```bash
 # Download the installer
-wget https://raw.githubusercontent.com/harkerhand/jumping/main/install.sh
+wget https://raw.githubusercontent.com/harkerhand/jumping/master/install.sh
 chmod +x install.sh
 ./install.sh
 
@@ -43,7 +43,7 @@ chmod +x install.sh
 
 ```bash
 # Run via curl
-curl -sSL https://raw.githubusercontent.com/harkerhand/jumping/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/harkerhand/jumping/master/install.sh | bash
 
 ```
 
