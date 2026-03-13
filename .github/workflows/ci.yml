@@ -23,6 +23,16 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
+      - name: Cache cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
       - name: Run tests
         run: cargo test --verbose
 
@@ -38,13 +48,31 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
+      - name: Cache cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
       - name: Build
         run: cargo build --release --verbose
+      - name: Rename binary
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            cp target/release/jumping.exe target/release/jumping-windows.exe
+          else
+            cp target/release/jumping target/release/jumping-${{ matrix.os }}
+          fi
       - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
           name: jumping-${{ matrix.os }}
-          path: target/release/jumping${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          path: target/release/jumping-${{ matrix.os }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
   release:
     name: Release
@@ -53,19 +81,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@master
+      - name: Download Linux binary
+        uses: actions/download-artifact@v4
         with:
-          toolchain: stable
-      - name: Build all targets
+          name: jumping-ubuntu-latest
+          path: artifacts/linux
+      - name: Download macOS binary
+        uses: actions/download-artifact@v4
+        with:
+          name: jumping-macos-latest
+          path: artifacts/macos
+      - name: Download Windows binary
+        uses: actions/download-artifact@v4
+        with:
+          name: jumping-windows-latest
+          path: artifacts/windows
+      - name: Prepare release binaries
+        shell: bash
         run: |
-          cargo build --release --verbose
+          mkdir -p release_binaries
+          cp artifacts/linux/jumping-ubuntu-latest release_binaries/jumping-linux
+          cp artifacts/macos/jumping-macos-latest release_binaries/jumping-macos
+          cp artifacts/windows/jumping-windows-latest.exe release_binaries/jumping-windows.exe
+          chmod +x release_binaries/jumping-linux release_binaries/jumping-macos
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            target/release/jumping
-            target/release/jumping.exe
+            release_binaries/jumping-linux
+            release_binaries/jumping-macos
+            release_binaries/jumping-windows.exe
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
