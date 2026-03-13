@@ -1,26 +1,49 @@
-# Jumping
+## [English](README_EN.md) | [中文](README.md)
+
+# 🛰️ JUMPING
 
 > **J**umping **U**nlocks **M**ulti-path **P**recise **I**nstant **N**avigating **G**ear.
 
-A lightweight TUI tool for lightning-fast directory teleportation.
+JUMPING 是一个基于 Rust 开发的极轻量级 TUI 目录导航工具。它通过三栏式布局彻底解决终端深层路径跳转的痛苦，让你在文件夹间快速“闪现”。
 
-# Use
+## ✨ 功能亮点
 
-add to `.bashrc` or `.zshrc`
+* **💨 极速响应**: 基于 Rust 编写，无运行依赖，极致轻量。
+* **📂 三栏视图**: 采用类似 macOS Finder 的父目录-当前目录-预览视图，结构清晰。
+* **⌨️ 类 Vim 操作**: 支持 `h/j/k/l` 及方向键导航，符合习惯。
+* **🎯 无缝跳转**: 配合 Shell 包装器，实现退出 UI 后自动 `cd` 到目标位置。
 
-```shell
-jp() {
-[ -f /tmp/jumping_result ] && rm /tmp/jumping_result
+## 🚀 安装与配置
 
-    jumping
+1. **编译源码:**
 
-    if [ -f /tmp/jumping_result ]; then
-        local DEST=$(cat /tmp/jumping_result)
-        if [ -d "$DEST" ]; then
-            cd "$DEST"
-            pwd
+    ```bash
+    cargo build --release
+    cp target/release/jumping /usr/local/bin/
+    ```
+
+2. **配置 Shell (添加到 `.bashrc` 或 `.zshrc`):**
+
+    ```bash
+    jp() {
+        [ -f /tmp/jumping_result ] && rm /tmp/jumping_result
+    
+        jumping
+    
+        if [ -f /tmp/jumping_result ]; then
+            local DEST=$(cat /tmp/jumping_result)
+            if [ -d "$DEST" ]; then
+                cd "$DEST"
+                pwd
+            fi
+            rm /tmp/jumping_result
         fi
-        rm /tmp/jumping_result
-    fi
-}
-```
+    }
+    ```
+
+## 🎮 操作指南
+
+* `j` / `k` 或 `↑` / `↓`: 在同级目录间上下切换。
+* `h` / `l` 或 `←` / `→`: 在父目录与子目录间层级穿梭。
+* `Enter`: 确认选择并直接跳转。
+* `q` / `Esc`: 退出工具并保持原位。
