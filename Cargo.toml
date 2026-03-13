@@ -2,6 +2,12 @@
 name = "jumping"
 version = "0.1.0"
 edition = "2024"
+description = "A lightweight TUI directory navigation tool"
+license = "MIT"
+repository = "https://github.com/harkerhand/jumping"
+readme = "README.md"
+keywords = ["tui", "directory", "navigation", "terminal"]
+categories = ["command-line-utilities", "filesystem"]
 
 [dependencies]
 ratatui = "0.30.0"
