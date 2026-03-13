@@ -96,7 +96,6 @@ curl -sSL https://raw.githubusercontent.com/harkerhand/jumping/master/install.sh
         local DEST=$(cat "$TMP_FILE")
         if [ -d "$DEST" ]; then
           cd "$DEST"
-          pwd
         fi
         rm "$TMP_FILE"
       fi

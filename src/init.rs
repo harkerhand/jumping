@@ -68,7 +68,6 @@ fn bash_init() -> String {
         local DEST=$(cat "$TMP_FILE")
         if [ -d "$DEST" ]; then
             cd "$DEST"
-            pwd
         fi
         rm "$TMP_FILE"
     fi
