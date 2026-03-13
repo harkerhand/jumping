@@ -1,5 +1,9 @@
 ## [English](README_EN.md) | [中文](README.md)
 
+<div align="center">
+   <img src="assets/logo.jpg" width="50%" alt="JUMPING Logo">
+</div>
+
 # 🛰️ JUMPING
 
 > **J**umping **U**nlocks **M**ulti-path **P**recise **I**nstant **N**avigating **G**ear.
