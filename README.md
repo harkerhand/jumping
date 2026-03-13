@@ -44,24 +44,37 @@ sudo mv jumping-macos /usr/local/bin/jumping
     cp target/release/jumping /usr/local/bin/
     ```
 
-2. **配置 Shell (添加到 `.bashrc` 或 `.zshrc`):**
+2. **配置 Shell:**
 
+   将以下内容添加到你的 Shell 配置文件中，以启用跳转功能（这会创建一个`jp`函数）：
+   对于 Bash 或 Zsh 用户，请添加：
     ```bash
-    jp() {
-        [ -f /tmp/jumping_result ] && rm /tmp/jumping_result
-    
-        jumping
-    
-        if [ -f /tmp/jumping_result ]; then
-            local DEST=$(cat /tmp/jumping_result)
-            if [ -d "$DEST" ]; then
-                cd "$DEST"
-                pwd
-            fi
-            rm /tmp/jumping_result
-        fi
-    }
+    eval "$(jumping --init)"
     ```
+   对于 Fish 用户，请添加：
+    ```fish
+    jumping --init fish | source
+    ```
+
+   你也可以直接运行 `jumping --init` 来查看对应 Shell 的配置命令。
+   例如在 zsh 中运行会得到：
+   ```bash
+   jp() {
+      local TMP_FILE="/tmp/jumping-1000"
+      [ -f "$TMP_FILE" ] && rm "$TMP_FILE"
+
+      jumping
+
+      if [ -f "$TMP_FILE" ]; then
+        local DEST=$(cat "$TMP_FILE")
+        if [ -d "$DEST" ]; then
+          cd "$DEST"
+          pwd
+        fi
+        rm "$TMP_FILE"
+      fi
+   }
+   ```
 
 ## 🎮 操作指南
 

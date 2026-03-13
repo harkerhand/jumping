@@ -46,20 +46,37 @@ sudo mv jumping-macos /usr/local/bin/jumping
     cp target/release/jumping /usr/local/bin/
     ```
 
-2. **Add to `.bashrc` or `.zshrc`:**
+2. **Configure the shell:**
+   将以下内容添加到你的 Shell 配置文件中，以启用跳转功能（这会创建一个`jp`函数）：
+   For Bash or Zsh users, add:
+   ```bash
+   eval "$(jumping --init)"
+   ```
+   For Fish users, add:
+   ```fish
+   jumping --init fish | source
+   ```
 
-    ```bash
-    jp() {
-        [ -f /tmp/jumping_result ] && rm /tmp/jumping_result
-        jumping
-        if [ -f /tmp/jumping_result ]; then
-            local DEST=$(cat /tmp/jumping_result)
-            [ -d "$DEST" ] && cd "$DEST" && pwd
-            rm /tmp/jumping_result
+   You can also run `jumping --init` directly to see the corresponding shell configuration command.
+   For example, running in zsh will give you:
+   ```bash
+   jp() {
+      local TMP_FILE="/tmp/jumping-1000"
+      [ -f "$TMP_FILE" ] && rm "$TMP_FILE"
+
+      jumping
+
+      if [ -f "$TMP_FILE" ]; then
+        local DEST=$(cat "$TMP_FILE")
+        if [ -d "$DEST" ]; then
+          cd "$DEST"
+          pwd
         fi
-    }
-    ```
-
+        rm "$TMP_FILE"
+      fi
+   }
+   ```
+   
 ## 🎮 Usage
 
 * `j` / `k` or `↑` / `↓`: Move up and down within the current directory.
