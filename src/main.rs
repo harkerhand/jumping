@@ -7,11 +7,11 @@ mod ui;
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
-    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use ratatui::{
-    Terminal,
     backend::{Backend, CrosstermBackend},
+    Terminal,
 };
 use std::fs;
 use std::io;
@@ -56,13 +56,13 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut app::App) -> io::Re
             }
 
             match key.code {
-                KeyCode::Char('q') | KeyCode::Esc => {
+                KeyCode::Char('q') | KeyCode::Char('Q') | KeyCode::Esc => {
                     return Ok(());
                 }
-                KeyCode::Up | KeyCode::Char('k') => app.move_up(),
-                KeyCode::Down | KeyCode::Char('j') => app.move_down(),
-                KeyCode::Left | KeyCode::Char('h') => app.move_left()?,
-                KeyCode::Right | KeyCode::Char('l') => app.move_right()?,
+                KeyCode::Up | KeyCode::Char('k') | KeyCode::Char('K') => app.move_up(),
+                KeyCode::Down | KeyCode::Char('j') | KeyCode::Char('J') => app.move_down(),
+                KeyCode::Left | KeyCode::Char('h') | KeyCode::Char('H') => app.move_left()?,
+                KeyCode::Right | KeyCode::Char('l') | KeyCode::Char('L') => app.move_right()?,
                 KeyCode::Enter => {
                     if let Some(index) = app.center_state.selected()
                         && let Some(entry) = app.center_entries.get(index)
@@ -79,6 +79,9 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut app::App) -> io::Re
                         }
                         return Ok(());
                     }
+                }
+                KeyCode::Char('i') | KeyCode::Char('I') => {
+                    app.toggle_hidden()?;
                 }
                 _ => {}
             }
