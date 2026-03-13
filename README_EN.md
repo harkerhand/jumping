@@ -21,6 +21,27 @@ instantly.
 
 ## 🚀 Installation & Setup
 
+### Download Pre-built Binaries
+
+Download the pre-built binaries from [GitHub Releases](https://github.com/harkerhand/jumping/releases):
+
+```bash
+# Linux
+wget https://github.com/harkerhand/jumping/releases/download/v0.1.0/jumping-linux
+chmod +x jumping-linux
+sudo mv jumping-linux /usr/local/bin/jumping
+
+# macOS
+wget https://github.com/harkerhand/jumping/releases/download/v0.1.0/jumping-macos
+chmod +x jumping-macos
+sudo mv jumping-macos /usr/local/bin/jumping
+
+# Windows
+# Download jumping-windows.exe and add to PATH
+```
+
+### Build from Source
+
 1. **Build from source:**
 
     ```bash
