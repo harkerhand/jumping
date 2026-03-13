@@ -233,9 +233,9 @@ main() {
 
             # 询问是否自动添加配置
             echo ""
-            read -p "是否自动添加配置到 $CONFIG_FILE? [y/N]: " -n 1 -r < /dev/tty
+            read -p "是否自动添加配置到 $CONFIG_FILE? [Y/n]: " -n 1 -r < /dev/tty
             echo ""
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
+            if [[ -z $REPLY ||  $REPLY =~ ^[Yy]$ ]]; then
                 if [ -f "$CONFIG_FILE" ]; then
                     {
                       echo "" >> "$CONFIG_FILE"
