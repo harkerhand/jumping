@@ -1,12 +1,45 @@
+use crate::app;
 use crate::app::App;
 use crate::entry::Entry;
+use crossterm::event::{DisableMouseCapture, EnableMouseCapture};
+use crossterm::execute;
+use crossterm::terminal::{
+    EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode,
+};
+use ratatui::backend::CrosstermBackend;
 use ratatui::{
+    Frame, Terminal,
     layout::{Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
     text::Text,
     widgets::{Block, Borders, List, ListItem, Paragraph},
-    Frame,
 };
+use std::io;
+
+pub(crate) fn run_tui_app() -> io::Result<()> {
+    enable_raw_mode()?;
+    let mut stdout = io::stdout();
+    execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+    let backend = CrosstermBackend::new(stdout);
+    let mut terminal = Terminal::new(backend)?;
+
+    let mut app = app::App::new()?;
+    let res = app::run_app(&mut terminal, &mut app);
+
+    disable_raw_mode()?;
+    execute!(
+        terminal.backend_mut(),
+        LeaveAlternateScreen,
+        DisableMouseCapture
+    )?;
+    terminal.show_cursor()?;
+
+    if let Err(err) = res {
+        println!("{:?}", err);
+    }
+
+    Ok(())
+}
 
 pub fn ui(f: &mut Frame, app: &mut App) {
     let vertical_chunks = Layout::default()
@@ -69,8 +102,10 @@ pub fn ui(f: &mut Frame, app: &mut App) {
     f.render_widget(right_list, chunks[2]);
 
     let status = if app.show_hidden { "SHOW" } else { "HIDDEN" };
-    let hint_text = format!("I/i: TOGGLE HIDDEN FOLDER (CURRENT: {}) | Q/q: QUIT", status);
-    let hint = Paragraph::new(Text::from(hint_text))
-        .block(Block::default().borders(Borders::NONE));
+    let hint_text = format!(
+        "I/i: TOGGLE HIDDEN FOLDER (CURRENT: {}) | Q/q: QUIT",
+        status
+    );
+    let hint = Paragraph::new(Text::from(hint_text)).block(Block::default().borders(Borders::NONE));
     f.render_widget(hint, vertical_chunks[1]);
 }

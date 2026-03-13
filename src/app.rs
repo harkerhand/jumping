@@ -1,4 +1,9 @@
 use crate::entry::Entry;
+use crate::{init, ui};
+use crossterm::event;
+use crossterm::event::{Event, KeyCode};
+use ratatui::Terminal;
+use ratatui::backend::Backend;
 use ratatui::widgets::ListState;
 use std::fs;
 use std::io;
@@ -194,5 +199,60 @@ impl App {
         self.show_hidden = !self.show_hidden;
         self.load_current_dir()?;
         Ok(())
+    }
+}
+
+pub(crate) fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> io::Result<()> {
+    loop {
+        terminal.draw(|f| ui::ui(f, app)).map_err(|e| {
+            eprintln!("UI rendering error: {:?}", e);
+            io::Error::other("UI rendering failed")
+        })?;
+
+        if event::poll(std::time::Duration::from_millis(100))?
+            && let Event::Key(key) = event::read()?
+        {
+            if key.kind != event::KeyEventKind::Press {
+                continue;
+            }
+
+            match key.code {
+                KeyCode::Char('q') | KeyCode::Char('Q') | KeyCode::Esc => {
+                    return Ok(());
+                }
+                KeyCode::Up | KeyCode::Char('k') | KeyCode::Char('K') => app.move_up(),
+                KeyCode::Down | KeyCode::Char('j') | KeyCode::Char('J') => app.move_down(),
+                KeyCode::Left | KeyCode::Char('h') | KeyCode::Char('H') => app.move_left()?,
+                KeyCode::Right | KeyCode::Char('l') | KeyCode::Char('L') => app.move_right()?,
+                KeyCode::Enter => {
+                    if let Some(index) = app.center_state.selected()
+                        && let Some(entry) = app.center_entries.get(index)
+                    {
+                        let path_str = if entry.name == ".." {
+                            entry.path.to_string_lossy().into_owned()
+                        } else {
+                            let abs_path = entry.path.canonicalize().unwrap_or(entry.path.clone());
+                            abs_path.to_string_lossy().into_owned()
+                        };
+                        let res = fs::write(init::get_tmp_file_path(), path_str);
+                        if res.is_err() {
+                            eprintln!(
+                                "Unable to write '{:?}': {:?}",
+                                init::get_tmp_file_path(),
+                                res.err()
+                            );
+                        }
+                        return Ok(());
+                    }
+                }
+                KeyCode::Char('i') | KeyCode::Char('I') => {
+                    app.toggle_hidden()?;
+                }
+                _ => {}
+            }
+        }
+        if app.should_quit {
+            return Ok(());
+        }
     }
 }
