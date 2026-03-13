@@ -1,7 +1,7 @@
 ## [English](README_EN.md) | [中文](README.md)
 
 <div align="center">
-   <img src="assets/logo.jpg" width="50%" alt="JUMPING Logo">
+   <img src="assets/logo.jpg" width="30%" alt="JUMPING Logo">
 </div>
 
 # 🛰️ JUMPING
