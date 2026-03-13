@@ -1,85 +1,113 @@
-## [English](README_EN.md) | [中文](README.md)
+## [English](https://www.google.com/search?q=README_EN.md) | [中文](README.md)
 
 <div align="center">
-   <img src="assets/logo.jpg" width="30%" alt="JUMPING Logo">
+<img src="assets/logo.jpg" width="30%" alt="JUMPING Logo">
 </div>
 
 # 🛰️ JUMPING
 
 > **J**umping **U**nlocks **M**ulti-path **P**recise **I**nstant **N**avigating **G**ear.
 
-JUMPING is a blazingly fast, lightweight TUI directory navigator built in Rust. It solves
-the "deep path fatigue" by providing a 3-column Miller column view to preview and teleport between directories
-instantly.
+JUMPING is an ultra-lightweight TUI directory navigation tool built with Rust. It eliminates the friction of navigating
+deep terminal paths via a three-column layout, allowing you to "teleport" between folders instantly.
 
-## ✨ Key Features
+---
 
-* **💨 Lightning Fast**: Zero-dependency runtime, minimal resource footprint.
-* **📂 Miller Columns**: 3-pane layout (Parent, Current, Preview) inspired by macOS Finder/Ranger.
-* **⌨️ Vim-like Motion**: Navigate with `h/j/k/l` or arrow keys.
-* **🎯 Instant Teleport**: Exit and `cd` to the selected directory automatically via shell wrapper.
+## ✨ Features
 
-## 🚀 Installation & Setup
+* **💨 Blazing Fast**: Written in Rust with zero runtime dependencies—pure performance.
+* **📂 Three-Column View**: A macOS Finder-style layout (Parent-Current-Preview) for clear structural context.
+* **⌨️ Vim-like Motion**: Supports `h/j/k/l` and arrow keys for intuitive navigation.
+* **🎯 Seamless Jump**: Integrated Shell wrapper enables automatic `cd` to the target location upon exit.
 
-### Download Pre-built Binaries
+---
 
-Download the pre-built binaries from [GitHub Releases](https://github.com/harkerhand/jumping/releases):
+## 🚀 Installation & Configuration
+
+### One-Click Installation (Recommended)
+
+We provide an automated script that detects your system, downloads the correct binary, installs it, and configures your
+Shell environment:
+
+**Option 1: Download and Run**
 
 ```bash
-# Linux
-wget https://github.com/harkerhand/jumping/releases/latest/download/jumping-linux
-chmod +x jumping-linux
-sudo mv jumping-linux /usr/local/bin/jumping
+# Download the installer
+wget https://raw.githubusercontent.com/harkerhand/jumping/main/install.sh
+chmod +x install.sh
+./install.sh
 
-# macOS
-wget https://github.com/harkerhand/jumping/releases/latest/download/jumping-macos
-chmod +x jumping-macos
-sudo mv jumping-macos /usr/local/bin/jumping
 ```
 
-### Build from Source
+**Option 2: Direct Pipe (if supported)**
 
-1. **Build from source:**
+```bash
+# Run via curl
+curl -sSL https://raw.githubusercontent.com/harkerhand/jumping/main/install.sh | bash
 
-    ```bash
-    cargo build --release
-    cp target/release/jumping /usr/local/bin/
-    ```
+```
 
-2. **Configure the shell:**
-   将以下内容添加到你的 Shell 配置文件中，以启用跳转功能（这会创建一个`jp`函数）：
-   For Bash or Zsh users, add:
+**Script Capabilities:**
+
+* ✅ Auto-detects OS (Linux/macOS)
+* ✅ Auto-detects Shell type (Bash/Zsh/Fish)
+* ✅ Intelligent path selection (System or User bin)
+* ✅ Automatic Shell environment configuration
+* ✅ Interactive setup for profile updates
+
+---
+
+### Manual Installation
+
+1. **Download Binary:**
+   Download the specific version for your platform
+   from [GitHub Releases](https://github.com/harkerhand/jumping/releases):
+
+   ```bash
+   # Linux
+   wget https://github.com/harkerhand/jumping/releases/latest/download/jumping-linux
+   chmod +x jumping-linux
+   sudo mv jumping-linux /usr/local/bin/jumping
+   
+   # macOS
+   wget https://github.com/harkerhand/jumping/releases/latest/download/jumping-macos
+   chmod +x jumping-macos
+   sudo mv jumping-macos /usr/local/bin/jumping
+   
+   ```
+
+2. **Build from Source (Optional):**
+
+   ```bash
+   cargo build --release
+   cp target/release/jumping /usr/local/bin/
+   
+   ```
+
+3. **Configure Shell:**
+   Add the following to your Shell profile to enable the `jp` jump function:
+   **For Bash or Zsh:**
+
    ```bash
    eval "$(jumping --init)"
    ```
-   For Fish users, add:
+
+   **For Fish:**
+
    ```fish
    jumping --init fish | source
    ```
 
-   You can also run `jumping --init` directly to see the corresponding shell configuration command.
-   For example, running in zsh will give you:
-   ```bash
-   jp() {
-      local TMP_FILE="/tmp/jumping-1000"
-      [ -f "$TMP_FILE" ] && rm "$TMP_FILE"
+> [!TIP]
+> Run `jumping --init` manually to see the underlying script. For example, in Zsh, it creates a `jp()` function that
+> handles the temporary file hand-off for the `cd` command.
 
-      jumping
+---
 
-      if [ -f "$TMP_FILE" ]; then
-        local DEST=$(cat "$TMP_FILE")
-        if [ -d "$DEST" ]; then
-          cd "$DEST"
-          pwd
-        fi
-        rm "$TMP_FILE"
-      fi
-   }
-   ```
-   
-## 🎮 Usage
+## 🎮 Controls
 
-* `j` / `k` or `↑` / `↓`: Move up and down within the current directory.
-* `h` / `l` or `←` / `→`: Traverse through directory hierarchy.
-* `Enter`: Confirm selection and teleport.
-* `q` / `Esc`: Quit without changing directory.
+* **`j` / `k**` or **`↑` / `↓**`: Move up and down within the current directory.
+* **`h` / `l**` or **`←` / `→**`: Traverse between parent and child directories.
+* **`Enter`**: Confirm selection and jump to the directory.
+* **`i`**: Toggle visibility of hidden files/folders.
+* **`q` / `Esc**`: Quit the tool and stay in the current directory.
